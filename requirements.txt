@@ -30,8 +30,10 @@ nvidia-nccl-cu12==2.21.5
 nvidia-nvjitlink-cu12==12.4.127
 nvidia-nvtx-cu12==12.4.127
 opencv-python-headless==4.10.0.84
+-e git+https://github.com/IlyaOvodov/OvoTools.git@8a0c8960eed49b19a14b02462886555b084a9a78#egg=ovotools
 packaging==24.2
 pillow==11.0.0
+protobuf==5.28.3
 pydantic==2.9.2
 pydantic_core==2.23.4
 pytorch-ignite==0.5.1
@@ -41,6 +43,7 @@ scipy==1.14.1
 setuptools==75.2.0
 stringzilla==3.10.5
 sympy==1.13.1
+tensorboardX==2.6.2.2
 torch==2.5.0
 torchvision==0.20.0
 triton==3.1.0
@@ -48,4 +51,3 @@ typing_extensions==4.12.2
 urllib3==2.2.3
 Werkzeug==3.1.2
 wrapt==1.16.0
--e git+https://github.com/IlyaOvodov/OvoTools.git@8a0c8960eed49b19a14b02462886555b084a9a78#egg=ovotools
