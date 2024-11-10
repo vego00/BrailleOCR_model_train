@@ -36,9 +36,9 @@ import model.refine_json as refine_json
 import model.test as test
 
 # import uuid
-import datetime
-import pytz
-import csv
+# import datetime
+# import pytz
+# import csv
 
 VALID_IMAGE_EXTENTIONS = tuple('.jpg,.jpe,.jpeg,.png,.gif,.svg,.bmp,.tiff,.tif,.jfif'.split(','))
 inference_width = 1024

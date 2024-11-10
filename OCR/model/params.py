@@ -1,17 +1,20 @@
-import local_config
+import OCR.local_config as local_config
 from ovotools import AttrDict
 
 settings = AttrDict(
     max_epochs=100000,
     tensorboard_port=6006,
-    device='cuda:3',
+    # device='cuda:3',
+    device='cpu',
     findLR=False,
-    can_overwrite=False,
+    # can_overwrite=False,
+    can_overwrite=True,
 )
 
 params = AttrDict(
     data_root = local_config.data_path,
-    model_name = 'NN_results/dsbi_lay{model_params.num_fpn_layers}',
+    # model_name = 'NN_results/dsbi_lay{model_params.num_fpn_layers}',
+    model_name = 'weights/model.t7',
     data = AttrDict(
         get_points = False,
         class_as_6pt=False,    # классификация присутствия каждой точки в рамке отдельно
@@ -50,7 +53,7 @@ params = AttrDict(
         ),
     ),
     #load_model_from = 'NN_results/dsbi_tst1_lay5_083746/models/clr.003.t7',  # retina_chars_d58e5f # retina_chars_7e1d4e
-    load_model_from = 'OCR/weights/model.t7',
+    load_model_from = 'weights/model.t7',
     # optim = 'torch.optim.Adam',
     optim = 'torch.optim.SGD',
     optim_params = AttrDict(

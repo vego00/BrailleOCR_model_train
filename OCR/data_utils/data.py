@@ -18,7 +18,9 @@ import cv2
 
 from data_utils import dsbi
 from braille_utils import label_tools as lt
-import local_config
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import OCR.local_config as local_config
 
 
 def rect_vflip(b):

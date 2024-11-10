@@ -4,7 +4,7 @@
 Trains model using parameters and setting defined in model.params
 Results are stored in local_config.data_path / params.model_name
 """
-import local_config
+import OCR.local_config as local_config
 import sys
 sys.path.append(local_config.global_3rd_party)
 from collections import OrderedDict
@@ -18,7 +18,8 @@ import ovotools.ignite_tools
 import ovotools.pytorch_tools
 import ovotools.pytorch
 
-from model.data_utils import data
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from data_utils import data
 from model import create_model_retinanet
 from model.params import params, settings
 import model.validate_retinanet as validate_retinanet
@@ -33,7 +34,7 @@ ctx = ovotools.pytorch.Context(settings=None, params=params)
 model, collate_fn, loss = create_model_retinanet.create_model_retinanet(params, device=settings.device)
 if 'load_model_from' in params.keys():
     preloaded_weights = torch.load(Path(local_config.data_path) / params.load_model_from, map_location='cpu')
-    model.load_state_dict(preloaded_weights)
+    model.load_state_dict(preloaded_weights, strict=False)
 
 ctx.net  = model
 ctx.loss = loss

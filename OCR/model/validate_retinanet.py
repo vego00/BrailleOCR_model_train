@@ -39,7 +39,7 @@ import PIL
 import torch
 sys.path.append(r'../..')
 sys.path.append('../NN/RetinaNet')
-import OCR.model.local_config as local_config
+import OCR.local_config as local_config
 import data_utils.data as data
 import data_utils.dsbi as dsbi
 import braille_utils.postprocess as postprocess
