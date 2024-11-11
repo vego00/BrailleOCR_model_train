@@ -1,2 +1,4 @@
 OCR/weights/model.t7
 data
+OCR/data
+model.t7

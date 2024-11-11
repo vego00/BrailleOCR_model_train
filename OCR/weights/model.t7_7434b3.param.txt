@@ -7,8 +7,11 @@
         'net_hw': ( 416, 416, ),
         'rect_margin': 0.3,
         'max_std': 0.1,
-        'train_list_file_names': [ 'val_list.txt', 'train_list.txt', ],
-        'val_list_file_names': {},
+        'train_list_file_names': [ 'data/answer/train_val_list.txt', 'data/original/성북소식지/train_image_list.txt', ],
+        'val_list_file_names': {
+            'val': [ 'data/answer/test_val_list.txt', ],
+            'test': [ 'data/original/성북소식지/test_image_list.txt', ],
+        },
     },
     'augmentation': {
         'img_width_range': ( 810, 890, ),
@@ -53,4 +56,4 @@
         'scale_min_lr': 0.95,
     },
 }
-hash: a3d788
+hash: 7434b3

@@ -214,19 +214,29 @@ class BrailleSubDataset:
             if fn[-1] == '\n':
                 fn = fn[:-1]
             fn = fn.replace('\\', '/')
-            image_fn, labels_fn = self.filenames_of_item(data_dir, fn)
-            if image_fn:
-                self.image_files.append(image_fn)
-                self.label_files.append(labels_fn)
+            print("INFO:", fn.split('.')[-1])
+            # image_fn, labels_fn = self.filenames_of_item(data_dir, fn)
+            # if image_fn:
+            #     self.image_files.append(image_fn)
+            #     self.label_files.append(labels_fn)
+            if fn.split('.')[-1] in ['jpg', 'jpeg', 'png']:
+                self.image_files.append(os.path.join(data_dir, fn))
+                self.images = [None] * len(self.image_files)
+                self.rects = [None] * len(self.image_files)
+                self.aug_images = [None] * len(self.image_files)
+                self.aug_bboxes = [None] * len(self.image_files)
+            elif fn.split('.')[-1] in ['json', 'txt']:
+                self.label_files.append(os.path.join(data_dir, fn))
             else:
                 print("WARNING: can't load file:", data_dir, fn)
+            print("BrailleSubDataset: loaded file", fn)
+        print(self.label_files)
+        # assert len(self.image_files) > 0, list_file
 
-        assert len(self.image_files) > 0, list_file
-
-        self.images = [None] * len(self.image_files)
-        self.rects = [None] * len(self.image_files)
-        self.aug_images = [None] * len(self.image_files)
-        self.aug_bboxes = [None] * len(self.image_files)
+        # self.images = [None] * len(self.image_files)
+        # self.rects = [None] * len(self.image_files)
+        # self.aug_images = [None] * len(self.image_files)
+        # self.aug_bboxes = [None] * len(self.image_files)
         self.REPEAT_PROBABILITY = 0.6
         self.verbose = verbose
         assert sample_weight <= 1
@@ -240,6 +250,11 @@ class BrailleSubDataset:
         return len(self.image_files) // self.denominator
 
     def __getitem__(self, item):
+        print(f"__getitem__ called with item: {item}")
+        print(f"Length of label_files: {len(self.label_files)}")
+        if item >= len(self.label_files):
+            raise IndexError(f"Index {item} out of range for label_files with length {len(self.label_files)}")
+    
         if self.denominator > 1:
             self.call_count = (self.call_count + 1) % self.denominator
             item = item * self.denominator + self.call_count
@@ -347,7 +362,8 @@ def read_LabelMe_annotation(label_filename, get_points):
         raise NotImplementedError("read_annotation get_point mode not implemented for LabelMe annotation")
     with open(label_filename, 'r', encoding='cp1251') as opened_json:
         loaded = json.load(opened_json)
-        
+    
+    print("width, height:", loaded["imageWidth"], loaded["imageHeight"])
     convert_x = limiting_scaler(loaded["imageWidth"], 1.0)
     convert_y = limiting_scaler(loaded["imageHeight"], 1.0)
     

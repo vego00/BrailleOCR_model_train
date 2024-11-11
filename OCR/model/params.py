@@ -25,12 +25,14 @@ params = AttrDict(
         train_list_file_names = [
             #r'DSBI/data/val_li2.txt',
             # r'DSBI/data/train_li2.txt',
-            r'val_list.txt',
-            r'train_list.txt',
+            r'data/answer/train_val_list.txt',
+            r'data/original/성북소식지/train_image_list.txt',
         ],
         val_list_file_names = {
             # 'val' :  [r'DSBI/data/val_li2.txt',],
             # 'test' :  [r'DSBI/data/test_li2.txt',]
+            'val': [r'data/answer/test_val_list.txt',],
+            'test': [r'data/original/성북소식지/test_image_list.txt',],
         }
     ),
     augmentation = AttrDict(
