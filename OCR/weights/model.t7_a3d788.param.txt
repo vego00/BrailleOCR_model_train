@@ -21,7 +21,7 @@
         'encoder_params': {
             'anchor_areas': [ 467.5, ],
             'aspect_ratios': [ 0.62, ],
-            'scale_ratios': [ 1.0, ],
+            'scale_ratios': [ 1.0, 1.2599210498948732, 1.5874010519681994, ],
             'iuo_fit_thr': 0,
             'iuo_nofit_thr': 0,
         },
@@ -53,4 +53,4 @@
         'scale_min_lr': 0.95,
     },
 }
-hash: 327d0c
+hash: a3d788

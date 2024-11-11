@@ -44,7 +44,8 @@ params = AttrDict(
         encoder_params = AttrDict(
             anchor_areas=[34*55/4,], # [22*22*0.62, 33*33*0.62, 45*45*0.62,], #[8*16., 12*24., 16*32.,], # 34*55/4
             aspect_ratios=[0.62,],  # [0.62,], #[1 / 2.,],
-            scale_ratios=[1.],
+            scale_ratios=[1., 2 ** (1 / 3.), 2 ** (2 / 3.)],
+            # scale_ratios=[1.],
             iuo_fit_thr = 0, # if iou > iuo_fit_thr => rect fits anchor
             iuo_nofit_thr = 0,
         ),
