@@ -1,4 +1,5 @@
 OCR/weights
 data
 OCR/data
+OCR/data_train
 model.t7

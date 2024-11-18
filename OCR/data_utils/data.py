@@ -123,8 +123,9 @@ class ImagePreprocessor:
         new_width = ((new_width+31)//32)*32
         new_height = int(img.shape[0]*stretch*new_sz/img_max_sz)
         new_height = ((new_height+31)//32)*32
-        new_size = (new_height, new_width)
-        return albu_f.resize(img, new_size, interpolation=cv2.INTER_LINEAR)
+        return albu_f.resize(img, height=new_height, width=new_width, interpolation=cv2.INTER_LINEAR)
+        # new_size = (new_height, new_width)
+        # return albu_f.resize(img, new_size, interpolation=cv2.INTER_LINEAR)
 
     def to_normalized_tensor(self, img, device='cpu'):
         '''
@@ -214,29 +215,22 @@ class BrailleSubDataset:
             if fn[-1] == '\n':
                 fn = fn[:-1]
             fn = fn.replace('\\', '/')
-            print("INFO:", fn.split('.')[-1])
+            # print("INFO:", fn.split('.')[-1])
             # image_fn, labels_fn = self.filenames_of_item(data_dir, fn)
-            # if image_fn:
-            #     self.image_files.append(image_fn)
-            #     self.label_files.append(labels_fn)
-            if fn.split('.')[-1] in ['jpg', 'jpeg', 'png']:
-                self.image_files.append(os.path.join(data_dir, fn))
-                self.images = [None] * len(self.image_files)
-                self.rects = [None] * len(self.image_files)
-                self.aug_images = [None] * len(self.image_files)
-                self.aug_bboxes = [None] * len(self.image_files)
-            elif fn.split('.')[-1] in ['json', 'txt']:
-                self.label_files.append(os.path.join(data_dir, fn))
+            image_fn = os.path.join(data_dir, fn)
+            labels_fn = image_fn.rsplit('.', 1)[0] + '.json'
+            print("INFO:", image_fn, labels_fn)
+            if image_fn:
+                self.image_files.append(image_fn)
+                self.label_files.append(labels_fn)
             else:
                 print("WARNING: can't load file:", data_dir, fn)
-            print("BrailleSubDataset: loaded file", fn)
-        print(self.label_files)
-        # assert len(self.image_files) > 0, list_file
+        assert len(self.image_files) > 0, list_file
 
-        # self.images = [None] * len(self.image_files)
-        # self.rects = [None] * len(self.image_files)
-        # self.aug_images = [None] * len(self.image_files)
-        # self.aug_bboxes = [None] * len(self.image_files)
+        self.images = [None] * len(self.image_files)
+        self.rects = [None] * len(self.image_files)
+        self.aug_images = [None] * len(self.image_files)
+        self.aug_bboxes = [None] * len(self.image_files)
         self.REPEAT_PROBABILITY = 0.6
         self.verbose = verbose
         assert sample_weight <= 1
@@ -300,7 +294,9 @@ class BrailleSubDataset:
         :return: image filename, label filename or None, None if no label file exists
         '''
         def check_label_ext(image_fn, ext):
+            print(image_fn)
             if not os.path.isfile(image_fn):
+                print(">>>>>>>>>>>>>>")
                 return None
             lbl_fn = image_fn.rsplit('.',1)[0]+ext
             if os.path.isfile(lbl_fn):
@@ -360,22 +356,27 @@ def read_LabelMe_annotation(label_filename, get_points):
     '''
     if get_points:
         raise NotImplementedError("read_annotation get_point mode not implemented for LabelMe annotation")
-    with open(label_filename, 'r', encoding='cp1251') as opened_json:
+    # with open(label_filename, 'r', encoding='cp1251') as opened_json:
+    #     loaded = json.load(opened_json)
+    with open(label_filename, 'r', encoding='utf-8') as opened_json:
         loaded = json.load(opened_json)
     
     print("width, height:", loaded["imageWidth"], loaded["imageHeight"])
     convert_x = limiting_scaler(loaded["imageWidth"], 1.0)
     convert_y = limiting_scaler(loaded["imageHeight"], 1.0)
     
-    boxes = loaded["correction"]["boxes"]
-    labels = loaded["correction"]["labels"]
+    # boxes = loaded["correction"]["boxes"]
+    # labels = loaded["correction"]["labels"]
+    boxes_by_lines = loaded["boxes"]
+    labels_by_lines = loaded["labels"]
     
     rects = [(convert_x(box[0]),
               convert_y(box[1]),
               convert_x(box[2]),
               convert_y(box[3]),
-              label
-              ) for box, label in zip(boxes, labels)]
+              label) 
+            for boxes, labels in zip(boxes_by_lines, labels_by_lines)
+            for box, label in zip(boxes, labels)]
     return rects
 
 

@@ -18,21 +18,19 @@ params = AttrDict(
     data = AttrDict(
         get_points = False,
         class_as_6pt=False,    # классификация присутствия каждой точки в рамке отдельно
-        batch_size = 12,
+        batch_size = 8,    # 12 -> 8
         net_hw = (416, 416),
         rect_margin = 0.3, #  every of 4 margins to char width
         max_std = 0.1,
         train_list_file_names = [
             #r'DSBI/data/val_li2.txt',
             # r'DSBI/data/train_li2.txt',
-            r'data/answer/train_val_list.txt',
-            r'data/original/성북소식지/train_image_list.txt',
+            r'data_train/train_image_list.txt',
         ],
         val_list_file_names = {
             # 'val' :  [r'DSBI/data/val_li2.txt',],
             # 'test' :  [r'DSBI/data/test_li2.txt',]
-            'val': [r'data/answer/test_val_list.txt',],
-            'test': [r'data/original/성북소식지/test_image_list.txt',],
+            'test': [r'data_train/test_image_list.txt',],
         }
     ),
     augmentation = AttrDict(
