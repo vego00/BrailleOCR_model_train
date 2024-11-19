@@ -26,15 +26,15 @@ import model.validate_retinanet as validate_retinanet
 
 if settings.findLR:
     params.model_name += '_findLR'
-params.save(can_overwrite=settings.can_overwrite)
-
 
 ctx = ovotools.pytorch.Context(settings=None, params=params)
+params.save(can_overwrite=settings.can_overwrite)
 
 model, collate_fn, loss = create_model_retinanet.create_model_retinanet(params, device=settings.device)
 if 'load_model_from' in params.keys():
     preloaded_weights = torch.load(Path(local_config.data_path) / params.load_model_from, map_location='cpu')
     model.load_state_dict(preloaded_weights)
+    print("Model loaded from: ", params.load_model_from)
 
 ctx.net  = model
 ctx.loss = loss
@@ -116,9 +116,11 @@ else:
     def eval_accuracy(engine):
         if engine.state.epoch % 100 == 1:
             data_set = validate_retinanet.prepare_data(ctx.params.data.val_list_file_names)
+            params_fn = ctx.params.get_base_filename() + '.param.txt'
+            print(params_fn)
             for key, data_list in data_set.items():
-                acc_res = validate_retinanet.evaluate_accuracy(os.path.join(ctx.params.get_base_filename(), 'param.txt'),
-                                                               model, settings.device, data_list)
+                # acc_res = validate_retinanet.evaluate_accuracy(os.path.join(ctx.params.get_base_filename(), 'param.txt'), model, settings.device, data_list)
+                acc_res = validate_retinanet.evaluate_accuracy(params_fn, model, settings.device, data_list)
                 for rk, rv in acc_res.items():
                     engine.state.metrics[key+ ':' + rk] = rv
 
@@ -144,3 +146,16 @@ def reset_resources(engine):
 
 trainer.run(train_loader, max_epochs = train_epochs)
 
+# from model import message
+# import traceback
+
+# try:
+#     trainer.run(train_loader, max_epochs=train_epochs)
+#     # 학습 완료 메시지 보내기
+#     message.train_done()
+# except Exception as e:
+#     # 오류 내용 가져오기
+#     error_message = traceback.format_exc()
+#     # 오류 메시지 보내기
+#     message.send_error(error_message)
+#     raise  # 예외를 다시 발생시켜 프로그램 종료

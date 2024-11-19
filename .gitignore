@@ -3,3 +3,4 @@ data
 OCR/data
 OCR/data_train
 model.t7
+OCR/model/telegram
