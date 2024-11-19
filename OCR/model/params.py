@@ -1,11 +1,13 @@
 import OCR.local_config as local_config
+import torch
 from ovotools import AttrDict
 
 settings = AttrDict(
     max_epochs=100,
     tensorboard_port=6006,
     # device='cuda:3',
-    device='cpu',
+    # device='cpu',
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu'),
     findLR=False,
     # can_overwrite=False,
     can_overwrite=True,
