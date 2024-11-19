@@ -114,7 +114,7 @@ else:
 
     @trainer.on(Events.EPOCH_COMPLETED)
     def eval_accuracy(engine):
-        if engine.state.epoch % 100 == 1:
+        if engine.state.epoch % 10 == 1:
             data_set = validate_retinanet.prepare_data(ctx.params.data.val_list_file_names)
             params_fn = ctx.params.get_base_filename() + '.param.txt'
             print(params_fn)

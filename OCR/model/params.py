@@ -2,7 +2,7 @@ import OCR.local_config as local_config
 from ovotools import AttrDict
 
 settings = AttrDict(
-    max_epochs=100000,
+    max_epochs=100,
     tensorboard_port=6006,
     # device='cuda:3',
     device='cpu',
