@@ -18,38 +18,39 @@ params = AttrDict(
     data = AttrDict(
         get_points = False,
         class_as_6pt=False,    # классификация присутствия каждой точки в рамке отдельно
-        batch_size = 12,
+        batch_size = 4,    # 12 -> 4
         net_hw = (416, 416),
         rect_margin = 0.3, #  every of 4 margins to char width
         max_std = 0.1,
         train_list_file_names = [
             #r'DSBI/data/val_li2.txt',
             # r'DSBI/data/train_li2.txt',
-            r'val_list.txt',
-            r'train_list.txt',
+            r'data_train/train_image_list.txt',
         ],
         val_list_file_names = {
             # 'val' :  [r'DSBI/data/val_li2.txt',],
             # 'test' :  [r'DSBI/data/test_li2.txt',]
+            'val': [r'data_train/train_image_list.txt',],
         }
     ),
     augmentation = AttrDict(
-        img_width_range=( 810, 890, ),  # 768*0.8, 1536*1.2
+        img_width_range=( 1024, 1376, ),  # 810, 890 -> 1024, 1376
         stretch_limit = 0.1,
         rotate_limit = 5,
     ),
     model = 'retina',
     model_params = AttrDict(
-        num_fpn_layers=5,
+        # num_fpn_layers=5,
         encoder_params = AttrDict(
-            anchor_areas=[34*55/4,], # [22*22*0.62, 33*33*0.62, 45*45*0.62,], #[8*16., 12*24., 16*32.,], # 34*55/4
-            aspect_ratios=[0.62,],  # [0.62,], #[1 / 2.,],
-            scale_ratios=[1.],
+            anchor_areas=[ 128.0, 288.0, 512.0, ], # [34*55/4,], -> [ 128.0, 288.0, 512.0, ],
+            aspect_ratios=[0.62,],  # [0.62,], -> [ 0.5, ],
+            # scale_ratios=[1., 2 ** (1 / 3.), 2 ** (2 / 3.)],
+            # scale_ratios=[1.],
             iuo_fit_thr = 0, # if iou > iuo_fit_thr => rect fits anchor
             iuo_nofit_thr = 0,
         ),
         loss_params=AttrDict(
-            class_loss_scale = 1,
+            class_loss_scale = 100, # 1 -> 100
         ),
     ),
     #load_model_from = 'NN_results/dsbi_tst1_lay5_083746/models/clr.003.t7',  # retina_chars_d58e5f # retina_chars_7e1d4e
@@ -57,18 +58,23 @@ params = AttrDict(
     # optim = 'torch.optim.Adam',
     optim = 'torch.optim.SGD',
     optim_params = AttrDict(
+        # Adam
         # lr=0.0001,
+        
         #momentum=0.9,
         #weight_decay = 0, #0.001,
         #nesterov = False,
+        
+        # SGD
         lr = 1e-4,
         momentum = 0.9,
-        weight_decay = 1e-4,
+        
+        # weight_decay = 1e-4,
     ),
     lr_finder=AttrDict(
         iters_num=200,
-        log_lr_start=-5,
-        log_lr_end=-1,
+        log_lr_start=-4, # -5 -> -4
+        log_lr_end=-0.3,   # -1 -> -0.3
     ),
     lr_scheduler=AttrDict(
         type='clr',
@@ -79,8 +85,8 @@ params = AttrDict(
     ),
     clr=AttrDict(
         warmup_epochs=10,
-        min_lr=1e-5,
-        max_lr=0.0002,
+        min_lr=1e-5,        # 1e-5 -> 0.0001
+        max_lr=0.0001,      # 0.0002 -> 0.0001
         period_epochs=500,
         scale_max_lr=0.95,
         scale_min_lr=0.95,
