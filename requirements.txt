@@ -48,7 +48,6 @@ nvidia-nvjitlink-cu12==12.6.77
 nvidia-nvtx-cu12==12.1.105
 opencv-python==4.10.0.84
 opencv-python-headless==4.10.0.84
--e git+https://github.com/IlyaOvodov/OvoTools.git@8a0c8960eed49b19a14b02462886555b084a9a78#egg=ovotools
 packaging==24.2
 pillow==10.4.0
 protobuf==5.28.3

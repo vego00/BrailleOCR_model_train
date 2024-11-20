@@ -310,13 +310,6 @@ def char_metrics_rects(boxes, labels, gt_rects, image_wh, img, do_filter_lonely_
         boxes = torch.tensor(boxes)
         gt_boxes = torch.tensor([r[:4] for r in gt_rects], dtype=torch.float32) * torch.tensor([image_wh[0], image_wh[1], image_wh[0], image_wh[1]])
         
-        # print(f"Predicted boxes: {boxes}")
-        print(f"Predicted labels: {labels}")
-        # print(f"Ground truth boxes: {gt_boxes}")
-        print(f"Ground truth labels: {gt_labels}")
-        # import pdb; pdb.set_trace()  # 여기서 일시 정지
-        
-        
         # Для отладки
         # labels = torch.tensor(labels)
         # gt_labels = torch.tensor(gt_labels)
@@ -359,7 +352,6 @@ def char_metrics_rects(boxes, labels, gt_rects, image_wh, img, do_filter_lonely_
         tp = sum(gt_is_correct)
         fp = sum(rec_is_false)
         fn = len(gt_is_correct) - tp
-        print("gt_is_correct: ", gt_is_correct)
 
         # if fp or fn:
         #     draw = PIL.ImageDraw.Draw(img)
@@ -498,7 +490,6 @@ def evaluate_accuracy(params_fn, model, device, data_list, do_filter_lonely_rect
     fn_c = 0
     for gt_dict in data_list:
         img_fn, gt_text, gt_rects = gt_dict['image_fn'], gt_dict['gt_text'], gt_dict['gt_rects']
-        print("img_fn:", img_fn)
         res_dict = recognizer.run(PIL.Image.open(img_fn),
                                   lang=lang,
                                   draw_refined=infer_retinanet.BrailleInference.DRAW_NONE,
