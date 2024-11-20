@@ -4,3 +4,5 @@ OCR/data
 OCR/data_train
 model.t7
 OCR/model/telegram
+__pycache__/
+*.pyc

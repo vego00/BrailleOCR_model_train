@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # coding: utf-8
-import enum
+# import enum
 try:
     import fitz
 except:
     pass
-import os
-import json
-import glob
+# import os
+# import json
+# import glob
 import sys
 import local_config
 sys.path.append(local_config.global_3rd_party)
@@ -18,22 +18,20 @@ from collections import OrderedDict
 import torch
 import timeit
 import copy
-from pathlib import Path
+# from pathlib import Path
 import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageFont
 import PIL.ImageOps
-from pathlib import Path
-import zipfile
+# import zipfile
 import data_utils.data as data
-import braille_utils.letters as letters
+# import braille_utils.letters as letters
 import braille_utils.label_tools as lt
 import model.create_model_retinanet as create_model_retinanet
 import pytorch_retinanet as pytorch_retinanet
 import pytorch_retinanet.encoder
 import braille_utils.postprocess as postprocess
-import model.refine_json as refine_json
-import model.test as test
+# import model.refine_json as refine_json
 
 # import uuid
 # import datetime
@@ -45,7 +43,7 @@ inference_width = 1024
 model_weights = 'model.t7'
 params_fn = join(local_config.data_path, 'weights', 'param.txt')
 model_weights_fn = join(local_config.data_path, 'weights', model_weights)
-device = 'cuda:0'
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 #device = 'cpu'
 cls_thresh = 0.3
 nms_thresh = 0.02
@@ -271,7 +269,6 @@ class BrailleInference:
         }
 
 
-
     def to_dict(self, img, lines, draw_refined = DRAW_NONE):
         '''
         generates dict for LabelMe json format
@@ -298,38 +295,38 @@ class BrailleInference:
                }
         return res
 
-    def save_results(self, result_dict, reverse_page, image, image_name):
+    # def save_results(self, result_dict, reverse_page, image, image_name):
         # suff = ".rev" if reverse_page else ""
         
-        results_dir = local_config.data_path
-        data_dir = Path(results_dir) / "data"
+        # results_dir = local_config.data_path
+        # data_dir = Path(results_dir) / "data"
         
         # 각 디렉토리 경로 설정
-        img_dir = Path(data_dir) / "images"
-        json_dir = Path(data_dir) / "annotations"
+        # img_dir = Path(data_dir) / "images"
+        # json_dir = Path(data_dir) / "annotations"
         
         # 디렉토리가 존재하지 않으면 생성
-        data_dir.mkdir(parents=True, exist_ok=True)
-        img_dir.mkdir(parents=True, exist_ok=True)
-        json_dir.mkdir(parents=True, exist_ok=True)
+        # data_dir.mkdir(parents=True, exist_ok=True)
+        # img_dir.mkdir(parents=True, exist_ok=True)
+        # json_dir.mkdir(parents=True, exist_ok=True)
         
         # 경로 설정
         # uuid_str = str(self.uuid_int)
         # marked_image_path = img_dir / (uuid_str + ".jpg")
         # json_path = json_dir / (uuid_str + ".json")
-        marked_image_path = img_dir / image_name
-        json_path = json_dir / image_name.replace(".jpg", ".json")
+        # marked_image_path = img_dir / image_name
+        # json_path = json_dir / image_name.replace(".jpg", ".json")
         
         # 이미지 저장
         # result_dict["labeled_image"].save(marked_image_path)
         
         # JSON 파일 저장
-        boxes = []
-        labels = []
+        # boxes = []
+        # labels = []
         
-        for line in result_dict["lines"]:
-            boxes.append([ch.refined_box for ch in line.chars])
-            labels.append([ch.label for ch in line.chars])
+        # for line in result_dict["lines"]:
+        #     boxes.append([ch.refined_box for ch in line.chars])
+        #     labels.append([ch.label for ch in line.chars])
         
         # 한국 시간대 설정
         # kst = pytz.timezone('Asia/Seoul')
@@ -363,119 +360,119 @@ class BrailleInference:
         # json_result = refine_json.main(boxes, labels, image)
     
         # refined_boxes, refined_brls, save = refine_json.main(boxes, labels, image, image_name, marked_image_path)
-        refined_boxes, refine_labels, refined_brls, save = refine_json.main(boxes, labels, result_dict["labeled_image"], image_name, marked_image_path)
-        json_result = {
-            "boxes": refined_boxes,
-            "labels": refine_labels,
-            "brl": refined_brls,
-            "save": save
-        }
-        with open(json_path, "w", encoding='utf-8') as f:
-            json.dump(json_result, f, indent=4, ensure_ascii=False)
-        return refined_boxes, refined_brls, save
+        # refined_boxes, refine_labels, refined_brls, save = refine_json.main(boxes, labels, result_dict["labeled_image"], image_name, marked_image_path)
+        # json_result = {
+        #     "boxes": refined_boxes,
+        #     "labels": refine_labels,
+        #     "brl": refined_brls,
+        #     "save": save
+        # }
+        # with open(json_path, "w", encoding='utf-8') as f:
+        #     json.dump(json_result, f, indent=4, ensure_ascii=False)
+        # return refined_boxes, refined_brls, save
         
         # with open(json_path, "w", encoding='utf-8') as f:
         #     json.dump(json_result, f, indent=4, ensure_ascii=False)
         
         # return json_result
     
-    def run_and_save(self, image_file, results_dir, target_stem, lang, extra_info, draw_refined,
-                     remove_labeled_from_filename, find_orientation, align_results, process_2_sides, repeat_on_aligned,
-                     save_development_info=True):
-        """
-        :param img: can be 1) PIL.Image 2) filename to image (.jpg etc.) or .pdf file
-        :param target_stem: starting part of result files names (i.e. <target_stem>.protocol.txt etc.) Is used when
-            img is image, not filename. When target_stem is None, it is taken from img stem.
-        """
-        t = timeit.default_timer()
-        image = PIL.Image.open(image_file)
-        image = PIL.ImageOps.exif_transpose(image)
-        image_name = image_file.filename
+    # def run_and_save(self, image_file, results_dir, target_stem, lang, extra_info, draw_refined,
+    #                  remove_labeled_from_filename, find_orientation, align_results, process_2_sides, repeat_on_aligned,
+    #                  save_development_info=True):
+    #     """
+    #     :param img: can be 1) PIL.Image 2) filename to image (.jpg etc.) or .pdf file
+    #     :param target_stem: starting part of result files names (i.e. <target_stem>.protocol.txt etc.) Is used when
+    #         img is image, not filename. When target_stem is None, it is taken from img stem.
+    #     """
+    #     t = timeit.default_timer()
+    #     image = PIL.Image.open(image_file)
+    #     image = PIL.ImageOps.exif_transpose(image)
+    #     image_name = image_file.filename
         
-        # Set find_orientation to False as we are not handling rotations
-        result_dict = self.run(image, lang=lang, draw_refined=draw_refined,
-                               find_orientation=False,
-                               process_2_sides=process_2_sides, align_results=align_results, repeat_on_aligned=repeat_on_aligned)
-        if result_dict is None:
-            return None
+    #     # Set find_orientation to False as we are not handling rotations
+    #     result_dict = self.run(image, lang=lang, draw_refined=draw_refined,
+    #                            find_orientation=False,
+    #                            process_2_sides=process_2_sides, align_results=align_results, repeat_on_aligned=repeat_on_aligned)
+    #     if result_dict is None:
+    #         return None
 
-        return self.save_results(result_dict, False, image, image_name)
+    #     return self.save_results(result_dict, False, image, image_name)
         # os.makedirs(results_dir, exist_ok=True)
         
         # self.result = self.save_results(result_dict, False, image, image_name)
         
         # return self.result
 
-    def process_dir_and_save(self, img_filename_mask, results_dir, lang, extra_info, draw_refined,
-                             remove_labeled_from_filename, find_orientation, process_2_sides, align_results,
-                             repeat_on_aligned, save_development_info=True):
-        if os.path.isfile(img_filename_mask) and os.path.splitext(img_filename_mask)[1] == '.txt':
-            list_file = os.path.join(local_config.data_path, img_filename_mask)
-            data_dir = os.path.dirname(list_file)
-            with open(list_file, 'r') as f:
-                files = f.readlines()
-            img_files = [os.path.join(data_dir, fn[:-1] if fn[-1] == '\n' else fn) for fn in files]
-            img_folders = [os.path.split(fn)[0] for fn in files]
-        elif os.path.isfile(img_filename_mask):
-            img_files = [img_filename_mask]
-            img_folders = [""]
-        else:
-            root_dir, mask = img_filename_mask.split('*', 1)
-            mask = '*' + mask
-            img_files = list(Path(root_dir).glob(mask))
-            img_folders = [os.path.split(fn)[0].replace(str(Path(root_dir)), '')[1:] for fn in img_files]
-        result_list = list()
-        for img_file, img_folder in zip(img_files, img_folders):
-            print('processing '+str(img_file))
-            with open(img_file, 'rb') as img_f:
-                img_f.filename = os.path.basename(img_file)
-                ith_result = self.run_and_save(
-                    img_f, os.path.join(results_dir, img_folder), target_stem=None,
-                    lang=lang, extra_info=extra_info,
-                    draw_refined=draw_refined,
-                    remove_labeled_from_filename=remove_labeled_from_filename,
-                    find_orientation=False,  # Set to False
-                    process_2_sides=process_2_sides,
-                    align_results=align_results,
-                    repeat_on_aligned=repeat_on_aligned,
-                    save_development_info=save_development_info)
-            if ith_result is None:
-                print('Error processing file: '+ str(img_file))
-                continue
-            result_list += ith_result
-        return result_list
+    # def process_dir_and_save(self, img_filename_mask, results_dir, lang, extra_info, draw_refined,
+    #                          remove_labeled_from_filename, find_orientation, process_2_sides, align_results,
+    #                          repeat_on_aligned, save_development_info=True):
+    #     if os.path.isfile(img_filename_mask) and os.path.splitext(img_filename_mask)[1] == '.txt':
+    #         list_file = os.path.join(local_config.data_path, img_filename_mask)
+    #         data_dir = os.path.dirname(list_file)
+    #         with open(list_file, 'r') as f:
+    #             files = f.readlines()
+    #         img_files = [os.path.join(data_dir, fn[:-1] if fn[-1] == '\n' else fn) for fn in files]
+    #         img_folders = [os.path.split(fn)[0] for fn in files]
+    #     elif os.path.isfile(img_filename_mask):
+    #         img_files = [img_filename_mask]
+    #         img_folders = [""]
+    #     else:
+    #         root_dir, mask = img_filename_mask.split('*', 1)
+    #         mask = '*' + mask
+    #         img_files = list(Path(root_dir).glob(mask))
+    #         img_folders = [os.path.split(fn)[0].replace(str(Path(root_dir)), '')[1:] for fn in img_files]
+    #     result_list = list()
+    #     for img_file, img_folder in zip(img_files, img_folders):
+    #         print('processing '+str(img_file))
+    #         with open(img_file, 'rb') as img_f:
+    #             img_f.filename = os.path.basename(img_file)
+    #             ith_result = self.run_and_save(
+    #                 img_f, os.path.join(results_dir, img_folder), target_stem=None,
+    #                 lang=lang, extra_info=extra_info,
+    #                 draw_refined=draw_refined,
+    #                 remove_labeled_from_filename=remove_labeled_from_filename,
+    #                 find_orientation=False,  # Set to False
+    #                 process_2_sides=process_2_sides,
+    #                 align_results=align_results,
+    #                 repeat_on_aligned=repeat_on_aligned,
+    #                 save_development_info=save_development_info)
+    #         if ith_result is None:
+    #             print('Error processing file: '+ str(img_file))
+    #             continue
+    #         result_list += ith_result
+    #     return result_list
 
-    def process_archive_and_save(self, arch_path, results_dir, lang, extra_info, draw_refined,
-                    remove_labeled_from_filename, find_orientation, align_results, process_2_sides, repeat_on_aligned,
-                    save_development_info=True):
-        arch_name = Path(arch_path).name
-        result_list = list()
-        with zipfile.ZipFile(arch_path, 'r') as archive:
-            for entry in archive.infolist():
-                with archive.open(entry) as file:
-                    if not Path(file.name).suffix.lower() in VALID_IMAGE_EXTENTIONS:
-                        continue
-                    try:
-                        img = PIL.Image.open(file)
-                        img = PIL.ImageOps.exif_transpose(img)
-                    except:
-                        print('Error processing file: ' + str(entry.filename) + ' in ' + str(arch_path))
-                        continue
-                    ith_result = self.run_and_save(
-                        img, results_dir, target_stem=arch_name + '.'+ Path(entry.filename).stem,
-                        lang=lang, extra_info=extra_info,
-                        draw_refined=draw_refined,
-                        remove_labeled_from_filename=remove_labeled_from_filename,
-                        find_orientation=False,  # Set to False
-                        process_2_sides=process_2_sides,
-                        align_results=align_results,
-                        repeat_on_aligned=repeat_on_aligned,
-                        save_development_info=save_development_info)
-                    if ith_result is None:
-                        # print('Error processing file: ' + str(img_file))
-                        continue
-                    result_list += ith_result
-        return result_list
+    # def process_archive_and_save(self, arch_path, results_dir, lang, extra_info, draw_refined,
+    #                 remove_labeled_from_filename, find_orientation, align_results, process_2_sides, repeat_on_aligned,
+    #                 save_development_info=True):
+    #     arch_name = Path(arch_path).name
+    #     result_list = list()
+    #     with zipfile.ZipFile(arch_path, 'r') as archive:
+    #         for entry in archive.infolist():
+    #             with archive.open(entry) as file:
+    #                 if not Path(file.name).suffix.lower() in VALID_IMAGE_EXTENTIONS:
+    #                     continue
+    #                 try:
+    #                     img = PIL.Image.open(file)
+    #                     img = PIL.ImageOps.exif_transpose(img)
+    #                 except:
+    #                     print('Error processing file: ' + str(entry.filename) + ' in ' + str(arch_path))
+    #                     continue
+    #                 ith_result = self.run_and_save(
+    #                     img, results_dir, target_stem=arch_name + '.'+ Path(entry.filename).stem,
+    #                     lang=lang, extra_info=extra_info,
+    #                     draw_refined=draw_refined,
+    #                     remove_labeled_from_filename=remove_labeled_from_filename,
+    #                     find_orientation=False,  # Set to False
+    #                     process_2_sides=process_2_sides,
+    #                     align_results=align_results,
+    #                     repeat_on_aligned=repeat_on_aligned,
+    #                     save_development_info=save_development_info)
+    #                 if ith_result is None:
+    #                     # print('Error processing file: ' + str(img_file))
+    #                     continue
+    #                 result_list += ith_result
+    #     return result_list
 
 
 if __name__ == '__main__':

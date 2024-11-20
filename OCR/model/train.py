@@ -32,7 +32,7 @@ params.save(can_overwrite=settings.can_overwrite)
 
 model, collate_fn, loss = create_model_retinanet.create_model_retinanet(params, device=settings.device)
 if 'load_model_from' in params.keys():
-    preloaded_weights = torch.load(Path(local_config.data_path) / params.load_model_from, map_location='cpu')
+    preloaded_weights = torch.load(Path(local_config.data_path) / params.load_model_from, map_location=settings.device)
     model.load_state_dict(preloaded_weights)
     print("Model loaded from: ", params.load_model_from)
 
@@ -114,10 +114,9 @@ else:
 
     @trainer.on(Events.EPOCH_COMPLETED)
     def eval_accuracy(engine):
-        if engine.state.epoch % 100 == 1:
+        if engine.state.epoch % 10 == 1:
             data_set = validate_retinanet.prepare_data(ctx.params.data.val_list_file_names)
             params_fn = ctx.params.get_base_filename() + '.param.txt'
-            print(params_fn)
             for key, data_list in data_set.items():
                 # acc_res = validate_retinanet.evaluate_accuracy(os.path.join(ctx.params.get_base_filename(), 'param.txt'), model, settings.device, data_list)
                 acc_res = validate_retinanet.evaluate_accuracy(params_fn, model, settings.device, data_list)
