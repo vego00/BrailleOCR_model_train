@@ -128,7 +128,7 @@ class BrailleInference:
             stretch_limit=0.0,
             rotate_limit=0,  # Ensure no rotation during augmentation
         )
-        self.preprocessor = data.ImagePreprocessor(params, mode='inference')
+        self.preprocessor = data.ImagePreprocessor(params, mode='train')
 
         if isinstance(model_weights_fn, torch.nn.Module):
             self.impl = BraileInferenceImpl(params, model_weights_fn, device, lt.label_is_valid, verbose=verbose)
