@@ -20,7 +20,7 @@ params = AttrDict(
     data = AttrDict(
         get_points = False,
         class_as_6pt=False,    # классификация присутствия каждой точки в рамке отдельно
-        batch_size = 4,    # 12 -> 4
+        batch_size = 2,    # 12 -> 2
         net_hw = (416, 416),
         rect_margin = 0.3, #  every of 4 margins to char width
         max_std = 0.1,
@@ -57,19 +57,19 @@ params = AttrDict(
     ),
     #load_model_from = 'NN_results/dsbi_tst1_lay5_083746/models/clr.003.t7',  # retina_chars_d58e5f # retina_chars_7e1d4e
     load_model_from = 'weights/model.t7',
-    # optim = 'torch.optim.Adam',
-    optim = 'torch.optim.SGD',
+    optim = 'torch.optim.Adam',
+    # optim = 'torch.optim.SGD',
     optim_params = AttrDict(
         # Adam
-        # lr=0.0001,
+        lr=0.0001,
         
         #momentum=0.9,
         #weight_decay = 0, #0.001,
         #nesterov = False,
         
         # SGD
-        lr = 1e-4,
-        momentum = 0.9,
+        # lr = 1e-4,
+        # momentum = 0.9,
         
         # weight_decay = 1e-4,
     ),

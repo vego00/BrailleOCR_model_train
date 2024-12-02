@@ -57,12 +57,11 @@ def common_aug(mode, params):
             height=params.data.net_hw[0],
             width=params.data.net_hw[1],
             always_apply=True))
-        # 회전 변환을 제거합니다.
-        # if params.augmentation.rotate_limit:
-        #     augs_list.append(T.Rotate(
-        #         limit=params.augmentation.rotate_limit,
-        #         border_mode=cv2.BORDER_CONSTANT,
-        #         always_apply=True))
+        if params.augmentation.rotate_limit:
+            augs_list.append(T.Rotate(
+                limit=params.augmentation.rotate_limit,
+                border_mode=cv2.BORDER_CONSTANT,
+                always_apply=True))
     elif mode == 'debug':
         augs_list.append(albumentations.CenterCrop(
             height=params.data.net_hw[0],
