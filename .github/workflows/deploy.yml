@@ -19,7 +19,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12' 
+          python-version: '3.8' 
 
       # 의존성 설치
       - name: Install dependencies
@@ -32,6 +32,14 @@ jobs:
         run: |
           echo "FLASK_APP=app.py" >> .env
           echo "FLASK_ENV=production" >> .env
+          echo "BUCKET_NAME=${{ secrets.BUCKET_NAME }}" >> .env
+          echo "MODEL_PATH=${{ secrets.MODEL_PATH }}" >> .env
+          echo "DOCDB_HOST=${{ secrets.DOCDB_HOST }}" >> .env
+          echo "DOCDB_PORT=${{ secrets.DOCDB_PORT }}" >> .env
+          echo "DOCDB_USER=${{ secrets.DOCDB_USER }}" >> .env
+          echo "DOCDB_PASSWORD=${{ secrets.DOCDB_PASSWORD }}" >> .env
+          echo "DOCDB_DATABASE=${{ secrets.DOCDB_DATABASE }}" >> .env
+          echo "DOCDB_COLLECTION=${{ secrets.DOCDB_COLLECTION }}" >> .env
           # 필요한 추가 환경 변수가 있다면 여기에 추가
 
       # 애플리케이션 패키징

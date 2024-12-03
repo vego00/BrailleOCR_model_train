@@ -6,3 +6,4 @@ OCR/model/telegram
 __pycache__/
 *.pyc
 vego-key.pem
+.env
