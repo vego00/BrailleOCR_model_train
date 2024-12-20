@@ -7,3 +7,4 @@ __pycache__/
 *.pyc
 vego-key.pem
 .env
+.venv

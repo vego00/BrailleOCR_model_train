@@ -18,8 +18,8 @@ from flasgger import Swagger
 app = Flask(__name__)
 swagger = Swagger(app)
 
-bucket_name = os.environ['BUCKET_NAME']
-model_path = os.environ['MODEL_PATH']
+# bucket_name = os.environ['BUCKET_NAME']
+# model_path = os.environ['MODEL_PATH']
 
 def download_from_s3(bucket_name, s3_key, local_path):
     s3 = boto3.client('s3')
@@ -151,3 +151,6 @@ def test():
           description: Test successful
     """
     return Response(status=200)
+
+if __name__ == '__main__':
+    app.run(host='localhost', port=5000)

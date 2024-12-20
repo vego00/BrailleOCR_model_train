@@ -16,8 +16,8 @@ import torch
 import torchvision.transforms.functional as F
 import cv2
 
-from data_utils import dsbi
-from braille_utils import label_tools as lt
+from OCR.data_utils import dsbi
+from OCR.braille_utils import label_tools as lt
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import OCR.local_config as local_config

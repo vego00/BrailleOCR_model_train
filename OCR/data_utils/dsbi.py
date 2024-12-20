@@ -4,7 +4,7 @@
 Utils for DSBI dataset (https://github.com/yeluo1994/DSBI)
 """
 import collections
-from braille_utils import label_tools as lt
+from OCR.braille_utils import label_tools as lt
 
 CellInfo = collections.namedtuple('CellInfo', 
                                   ['row', 'col',  # row and column in a symbol grid
