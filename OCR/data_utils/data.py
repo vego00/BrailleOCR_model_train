@@ -13,10 +13,8 @@ import albumentations
 import albumentations.augmentations.transforms as T
 import albumentations.augmentations.functional as albu_f
 import torch
-import torchvision.transforms.functional as F
 import cv2
 
-from OCR.data_utils import dsbi
 from OCR.braille_utils import label_tools as lt
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))

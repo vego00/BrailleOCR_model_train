@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
-"""
-Trains model using parameters and setting defined in model.params
-Results are stored in local_config.data_path / params.model_name
-"""
+
 import OCR.local_config as local_config
 import sys
 sys.path.append(local_config.global_3rd_party)
@@ -118,15 +115,9 @@ else:
             data_set = validate_retinanet.prepare_data(ctx.params.data.val_list_file_names)
             params_fn = ctx.params.get_base_filename() + '.param.txt'
             for key, data_list in data_set.items():
-                # acc_res = validate_retinanet.evaluate_accuracy(os.path.join(ctx.params.get_base_filename(), 'param.txt'), model, settings.device, data_list)
                 acc_res = validate_retinanet.evaluate_accuracy(params_fn, model, settings.device, data_list)
                 for rk, rv in acc_res.items():
                     engine.state.metrics[key+ ':' + rk] = rv
-
-#@trainer.on(Events.EPOCH_COMPLETED)
-#def save_model(engine):
-#    if save_every and (engine.state.epoch % save_every) == 0:
-#        ovotools.pytorch_tools.save_model(model, params, rel_dir = 'models', filename = '{:05}.t7'.format(engine.state.epoch))
 
 timer = ovotools.ignite_tools.IgniteTimes(trainer, count_iters = False, measured_events = {
     'train:time.iter': (trainer, Events.ITERATION_STARTED, Events.ITERATION_COMPLETED),
@@ -141,20 +132,5 @@ tb_logger.start_server(settings.tensorboard_port, start_it = False)
 def reset_resources(engine):
     engine.state.batch = None
     engine.state.output = None
-    #torch.cuda.empty_cache()
 
 trainer.run(train_loader, max_epochs = train_epochs)
-
-# from model import message
-# import traceback
-
-# try:
-#     trainer.run(train_loader, max_epochs=train_epochs)
-#     # 학습 완료 메시지 보내기
-#     message.train_done()
-# except Exception as e:
-#     # 오류 내용 가져오기
-#     error_message = traceback.format_exc()
-#     # 오류 메시지 보내기
-#     message.send_error(error_message)
-#     raise  # 예외를 다시 발생시켜 프로그램 종료

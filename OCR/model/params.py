@@ -5,33 +5,25 @@ from ovotools import AttrDict
 settings = AttrDict(
     max_epochs=100,
     tensorboard_port=6006,
-    # device='cuda:3',
-    # device='cpu',
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu'),
     findLR=False,
-    # can_overwrite=False,
     can_overwrite=True,
 )
 
 params = AttrDict(
     data_root = local_config.data_path,
-    # model_name = 'NN_results/dsbi_lay{model_params.num_fpn_layers}',
     model_name = 'weights/model.t7',
     data = AttrDict(
         get_points = False,
-        class_as_6pt=False,    # классификация присутствия каждой точки в рамке отдельно
+        class_as_6pt=False,
         batch_size = 2,    # 12 -> 2
         net_hw = (416, 416),
-        rect_margin = 0.3, #  every of 4 margins to char width
+        rect_margin = 0.3,
         max_std = 0.1,
         train_list_file_names = [
-            #r'DSBI/data/val_li2.txt',
-            # r'DSBI/data/train_li2.txt',
             r'data_train/train_image_list.txt',
         ],
         val_list_file_names = {
-            # 'val' :  [r'DSBI/data/val_li2.txt',],
-            # 'test' :  [r'DSBI/data/test_li2.txt',]
             'val': [r'data_train/train_image_list.txt',],
         }
     ),
@@ -42,7 +34,6 @@ params = AttrDict(
     ),
     model = 'retina',
     model_params = AttrDict(
-        # num_fpn_layers=5,
         encoder_params = AttrDict(
             anchor_areas=[ 128.0, 288.0, 512.0, ], # [34*55/4,], -> [ 128.0, 288.0, 512.0, ],
             aspect_ratios=[0.62,],  # [0.62,], -> [ 0.5, ],
@@ -55,7 +46,6 @@ params = AttrDict(
             class_loss_scale = 100, # 1 -> 100
         ),
     ),
-    #load_model_from = 'NN_results/dsbi_tst1_lay5_083746/models/clr.003.t7',  # retina_chars_d58e5f # retina_chars_7e1d4e
     load_model_from = 'weights/model.t7',
     optim = 'torch.optim.Adam',
     # optim = 'torch.optim.SGD',

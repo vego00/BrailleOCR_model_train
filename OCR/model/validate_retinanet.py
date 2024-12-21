@@ -200,7 +200,7 @@ def dot_metrics(res, gt):
 
 
 def filter_lonely_rects(boxes, labels, img):
-    dx_to_h = 2.35 # расстояние от края до центра 3го символа
+    dx_to_h = 2.35 
     res_boxes = []
     res_labels = []
     filtered = []
@@ -218,11 +218,6 @@ def filter_lonely_rects(boxes, labels, img):
                 break
         else:
             filtered.append(box)
-    # if filtered:
-    #     draw = PIL.ImageDraw.Draw(img)
-    #     for b in filtered:
-    #         draw.rectangle(b, fill="red")
-    #     img.show()
 
     return res_boxes, res_labels
 
@@ -230,34 +225,13 @@ def dot_metrics_rects(boxes, labels, gt_rects, image_wh, img, do_filter_lonely_r
     if do_filter_lonely_rects:
         boxes, labels = filter_lonely_rects(boxes, labels, img)
     gt_labels = [r[4] for r in gt_rects]
-    gt_rec_labels = [-1] * len(gt_rects)  # recognized label for gt, -1 - missed
-    rec_is_false = [1] * len(labels)  # recognized is false
+    gt_rec_labels = [-1] * len(gt_rects) 
+    rec_is_false = [1] * len(labels) 
 
     if len(gt_rects) and len(labels):
         boxes = torch.tensor(boxes)
         gt_boxes = torch.tensor([r[:4] for r in gt_rects], dtype=torch.float32) * torch.tensor([image_wh[0], image_wh[1], image_wh[0], image_wh[1]])
-
-        # Для отладки
-        # labels = torch.tensor(labels)
-        # gt_labels = torch.tensor(gt_labels)
-        #
-        # _, rec_order = torch.sort(boxes[:, 1], dim=0)
-        # boxes = boxes[rec_order][:15]
-        # labels = labels[rec_order][:15]
-        # _, gt_order = torch.sort(gt_boxes[:, 1], dim=0)
-        # gt_boxes = gt_boxes[gt_order][:15]
-        # gt_labels = gt_labels[gt_order][:15]
-        #
-        # _, rec_order = torch.sort(labels, dim=0)
-        # boxes = boxes[rec_order]
-        # labels = labels[rec_order]
-        # _, gt_order = torch.sort(-gt_labels, dim=0)
-        # gt_boxes = gt_boxes[gt_order]
-        # gt_labels = gt_labels[gt_order]
-        #
-        # labels = torch.tensor(labels)
-        # gt_labels = torch.tensor(gt_labels)
-
+        
         areas = (boxes[:, 2] - boxes[:, 0])*(boxes[:, 3] - boxes[:, 1])
         gt_areas = (gt_boxes[:, 2] - gt_boxes[:, 0])*(gt_boxes[:, 3] - gt_boxes[:, 1])
         x1 = torch.max(gt_boxes[:, 0].unsqueeze(1), boxes[:, 0].unsqueeze(0))
@@ -310,27 +284,6 @@ def char_metrics_rects(boxes, labels, gt_rects, image_wh, img, do_filter_lonely_
         boxes = torch.tensor(boxes)
         gt_boxes = torch.tensor([r[:4] for r in gt_rects], dtype=torch.float32) * torch.tensor([image_wh[0], image_wh[1], image_wh[0], image_wh[1]])
         
-        # Для отладки
-        # labels = torch.tensor(labels)
-        # gt_labels = torch.tensor(gt_labels)
-        #
-        # _, rec_order = torch.sort(boxes[:, 1], dim=0)
-        # boxes = boxes[rec_order][:15]
-        # labels = labels[rec_order][:15]
-        # _, gt_order = torch.sort(gt_boxes[:, 1], dim=0)
-        # gt_boxes = gt_boxes[gt_order][:15]
-        # gt_labels = gt_labels[gt_order][:15]
-        #
-        # _, rec_order = torch.sort(labels, dim=0)
-        # boxes = boxes[rec_order]
-        # labels = labels[rec_order]
-        # _, gt_order = torch.sort(-gt_labels, dim=0)
-        # gt_boxes = gt_boxes[gt_order]
-        # gt_labels = gt_labels[gt_order]
-        #
-        # labels = torch.tensor(labels)
-        # gt_labels = torch.tensor(gt_labels)
-
         areas = (boxes[:, 2] - boxes[:, 0])*(boxes[:, 3] - boxes[:, 1])
         gt_areas = (gt_boxes[:, 2] - gt_boxes[:, 0])*(gt_boxes[:, 3] - gt_boxes[:, 1])
         x1 = torch.max(gt_boxes[:, 0].unsqueeze(1), boxes[:, 0].unsqueeze(0))
@@ -353,20 +306,6 @@ def char_metrics_rects(boxes, labels, gt_rects, image_wh, img, do_filter_lonely_
         fp = sum(rec_is_false)
         fn = len(gt_is_correct) - tp
 
-        # if fp or fn:
-        #     draw = PIL.ImageDraw.Draw(img)
-        #     for i, is_correct in enumerate(gt_is_correct):
-        #         if not is_correct:
-        #             draw.rectangle(gt_boxes[i].tolist(), outline="red")
-        #             draw.text((gt_boxes[i][0]-20, gt_boxes[i][3]), label_tools.int_to_label123(gt_labels[i]), fill="red")
-        #         else:
-        #             draw.rectangle(gt_boxes[i].tolist(), outline="green")
-        #     for i, is_false in enumerate(rec_is_false):
-        #         if is_false:
-        #             draw.rectangle(boxes[i].tolist(), outline="blue")
-        #             draw.text((boxes[i][0]+20, boxes[i][3]), label_tools.int_to_label123(labels[i]), fill="blue")
-        #     img.show()
-
     return tp, fp, fn
 
 
@@ -379,16 +318,15 @@ def validate_model(recognizer, data_list, do_filter_lonely_rects, metrics_for_li
     sum_d = 0
     sum_d1 = 0.
     sum_len = 0
-    # по тексту
+    
     tp = 0
     fp = 0
     fn = 0
-    # по rect
+
     tp_r = 0
     fp_r = 0
     fn_r = 0
 
-    # по символам
     tp_c = 0
     fp_c = 0
     fn_c = 0
@@ -448,17 +386,11 @@ def validate_model(recognizer, data_list, do_filter_lonely_rects, metrics_for_li
         fp_c += fpi
         fn_c += fni
 
-
-    # precision = tp/(tp+fp)
-    # recall = tp/(tp+fn)
     precision_r = tp_r/(tp_r+fp_r) if tp_r+fp_r != 0 else 0.
     recall_r = tp_r/(tp_r+fn_r) if tp_r+fn_r != 0 else 0.
     precision_c = tp_c/(tp_c+fp_c) if tp_c+fp_c != 0 else 0.
     recall_c = tp_c/(tp_c+fn_c) if tp_c+fn_c != 0 else 0.
     return {
-        # 'precision': precision,
-        # 'recall': recall,
-        # 'f1': 2*precision*recall/(precision+recall),
         'precision_r': precision_r,
         'recall_r': recall_r,
         'f1_r': 2*precision_r*recall_r/(precision_r+recall_r) if precision_r+recall_r != 0 else 0.,
@@ -476,7 +408,6 @@ def evaluate_accuracy(params_fn, model, device, data_list, do_filter_lonely_rect
     :param data_list:  list of (image filename, groundtruth pseudotext)
     :return: (<distance> avg. by documents, <distance> avg. by char, <<distance> avg. by char> avg. by documents>)
     """
-    # по символам
     recognizer = infer_retinanet.BrailleInference(
         params_fn=params_fn,
         model_weights_fn=model,
@@ -511,7 +442,6 @@ def evaluate_accuracy(params_fn, model, device, data_list, do_filter_lonely_rect
             boxes = res_dict['boxes']
             labels = res_dict['labels']
             
-        # print("boxes:", boxes)
         tpi, fpi, fni = char_metrics_rects(boxes = boxes, labels = labels,
                                           gt_rects = res_dict['gt_rects'], image_wh = (res_dict['labeled_image'].width, res_dict['labeled_image'].height),
                                           img=None, do_filter_lonely_rects=do_filter_lonely_rects)
@@ -527,7 +457,6 @@ def evaluate_accuracy(params_fn, model, device, data_list, do_filter_lonely_rect
     }
 
 def main(table_like_format):
-    # make data list
     for m in models:
         print(m)
     data_set = prepare_data()
@@ -559,10 +488,7 @@ def main(table_like_format):
             verbose=verbose)
         for key, data_list in data_set.items():
             res = validate_model(recognizer, data_list, do_filter_lonely_rects=do_filter_lonely_rects, metrics_for_lines = metrics_for_lines)
-            # print('{model_weights} {key} precision: {res[precision]:.4}, recall: {res[recall]:.4} f1: {res[f1]:.4} '
-            #       'precision_r: {res[precision_r]:.4}, recall_r: {res[recall_r]:.4} f1_r: {res[f1_r]:.4} '
-            #       'd_by_doc: {res[d_by_doc]:.4} d_by_char: {res[d_by_char]:.4} '
-            #       'd_by_char_avg: {res[d_by_char_avg]:.4}'.format(model_weights=model_weights, key=key, res=res))
+            
             if table_like_format:
                 print('{model}\t{weights}\t{key}\t'
                       '{res[precision_r]:.4}\t{res[recall_r]:.4}\t{res[f1_r]:.4}\t'
@@ -574,17 +500,3 @@ def main(table_like_format):
                       'precision_r: {res[precision_r]:.4}, recall_r: {res[recall_r]:.4} f1_r: {res[f1_r]:.4} '
                       'd_by_doc: {res[d_by_doc]:.4} d_by_char: {res[d_by_char]:.4} '
                       'd_by_char_avg: {res[d_by_char_avg]:.4}'.format(model_weights=model_weights, key=key, res=res))
-
-if __name__ == '__main__':
-    import timeit
-    infer_retinanet.nms_thresh = 0.02
-    postprocess.Line.LINE_THR = 0.6
-    do_filter_lonely_rects = False
-    metrics_for_lines = True  # was False
-    show_filtered = False
-    t0 = timeit.default_timer()
-    # for thr in (0.5, 0.6, 0.7, 0.8):
-    #     postprocess.Line.LINE_THR = thr
-    #     print(thr)
-    main(table_like_format=True)
-    print(timeit.default_timer() - t0)

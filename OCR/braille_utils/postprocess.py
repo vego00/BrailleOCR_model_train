@@ -361,29 +361,3 @@ def add_blanks(lines):
                 ch.char = ' ' * ch.spaces_before + ch.char
     return lines
 
-
-# if __name__ == '__main__':
-#     # 테스트 코드
-#     validate_postprocess('''аб«~6~и»вг''', '''аб«i»вг''')
-#     validate_postprocess('''~46~и вг''', '''I вг''')
-#     validate_postprocess('''~##~2))~6~r9n7o''', '''2))ringo''')
-
-#     validate_postprocess('''(~##~1) =~##~1''', '''(1)=1''')
-#     validate_postprocess('''а ~((~б~))~,''', '''а (б),''')
-#     validate_postprocess('''~((~в~))~,''', '''(в),''')
-#     validate_postprocess('''~()~~##~1~()~,''', '''(1),''')
-#     validate_postprocess('''~##~1,ма,''', '''1, ма,''')
-#     validate_postprocess('''~##~20-х годах''', '''20-х годах''')
-#     validate_postprocess('''~##~1\n0''', '''1\nж''')
-
-#     validate_postprocess('''ab  c
-
-# d e f''', '''аб  ц
-
-# д е ф''')
-
-#     validate_postprocess('''~1~b  c~##~34
-
-# d e f''', '''аб  ц34
-
-# д е ф''')
